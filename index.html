@@ -1,0 +1,694 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>STEMforAll Hackathon 2026</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@600;700;800&family=Cairo:wght@400;600;700&family=JetBrains+Mono:wght@700&display=swap">
+<style>
+/* Layout: loud night-sky event header with live countdown → colourful sticky tab bar → four tabs of bright cards → dark footer.
+   One deliberate look (bright cards on a soft background, dark header and footer), so it is the same in every theme. */
+:root{
+  color-scheme:light;
+  --night:#12163a; --night2:#1d2460;
+  --bg:#f3f4ff; --card:#ffffff; --ink:#151936; --mute:#596084; --line:#e2e4f6;
+  --blue:#4f5bff; --pink:#ff3d81; --green:#14b88a; --yellow:#ffc531; --orange:#ff7a29; --purple:#8b5cf6;
+  --f-head:"Baloo Bhaijaan 2","Cairo","Segoe UI",Tahoma,sans-serif;
+  --f-body:"Cairo","Segoe UI",Tahoma,Arial,sans-serif;
+  --f-num:"JetBrains Mono",Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 var(--f-body)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:20;background:var(--night)}
+#app[data-lang="en"] .ar,#app[data-lang="ar"] .en{display:none!important}
+.gut{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.col{max-width:1000px;margin:0 auto}
+a{color:var(--blue);font-weight:700}
+:focus-visible{outline:3px solid var(--yellow);outline-offset:3px}
+h1,h2,h3{font-family:var(--f-head);line-height:1.15;margin:0;text-wrap:balance}
+
+/* ===== HEADER ===== */
+.hero{background:
+  radial-gradient(600px 300px at 85% 10%,rgba(255,61,129,.45),transparent 60%),
+  radial-gradient(500px 300px at 10% 90%,rgba(79,91,255,.55),transparent 60%),
+  radial-gradient(400px 260px at 60% 100%,rgba(20,184,138,.35),transparent 60%),
+  var(--night);color:#fff;padding-block:14px 40px;position:relative;overflow:hidden}
+.hero::after{content:"</>  { }  ()  ;  =>  #  01  </>";position:absolute;inset:auto -20px 6px auto;font:700 70px/1 var(--f-num);color:rgba(255,255,255,.05);white-space:nowrap;pointer-events:none}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;font:800 18px var(--f-head)}
+.logo .bolt{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--yellow),var(--orange));font-size:20px;box-shadow:0 6px 18px rgba(255,197,49,.35)}
+.logo small{display:block;font:600 12px var(--f-body);opacity:.75}
+.lang{display:flex;background:rgba(255,255,255,.12);border-radius:999px;padding:4px;gap:4px}
+.lang button{border:0;border-radius:999px;background:none;color:#fff;font:700 14px var(--f-body);padding:6px 14px;cursor:pointer}
+.lang button[aria-pressed="true"]{background:#fff;color:var(--night)}
+.herogrid{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:30px;align-items:center;margin-top:30px}
+@media (max-width:760px){.herogrid{grid-template-columns:1fr}.posterwrap{max-width:240px;justify-self:center}}
+.kicker{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:5px 14px;font-weight:700;font-size:14px}
+.kicker .dot{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px rgba(20,184,138,.3)}
+.hero h1{font-size:clamp(38px,7vw,68px);margin:14px 0 10px;font-weight:800}
+.hero h1 .grad{background:linear-gradient(90deg,var(--yellow),var(--pink) 55%,#a78bfa);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .sub{font-size:18px;opacity:.9;max-width:52ch;margin:0 0 18px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px;padding:0;list-style:none}
+.badges li{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:6px 12px;font-weight:700;font-size:14px}
+.badges li.fire{background:var(--pink);border-color:var(--pink)}
+.cta{display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:14px;padding:12px 20px;font:800 16px var(--f-head);cursor:pointer;text-decoration:none;transition:transform .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn.y{background:var(--yellow);color:var(--night);box-shadow:0 8px 22px rgba(255,197,49,.35)}
+.btn.w{background:rgba(255,255,255,.14);color:#fff;border:1.5px solid rgba(255,255,255,.35)}
+.btn.b{background:var(--blue);color:#fff;box-shadow:0 8px 20px rgba(79,91,255,.3)}
+.btn.o{background:#fff;color:var(--blue);border:2px solid var(--blue)}
+.countdown{display:flex;gap:10px;margin-top:24px;flex-wrap:wrap;align-items:center}
+.countdown .cell{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:8px 12px;min-width:74px;text-align:center}
+@media (max-width:480px){.countdown{gap:6px}.countdown .lbl{width:100%}.countdown .cell{min-width:0;flex:1;padding:6px 4px}.countdown b{font-size:22px}}
+.countdown b{display:block;font:700 28px/1.1 var(--f-num);color:var(--yellow)}
+.countdown span{font-size:12px;font-weight:700;opacity:.8}
+.countdown .lbl{font-weight:700;font-size:14px;opacity:.85;margin-inline-end:4px}
+.posterwrap{position:relative}
+.posterwrap img{width:100%;border-radius:18px;transform:rotate(3deg);box-shadow:0 20px 50px rgba(0,0,0,.45);border:4px solid #fff;display:block}
+#app[dir="rtl"] .posterwrap img{transform:rotate(-3deg)}
+.sticker{position:absolute;z-index:2;top:-14px;inset-inline-start:-14px;background:var(--pink);color:#fff;font:800 15px/1.2 var(--f-head);padding:10px 12px;border-radius:14px;transform:rotate(-8deg);box-shadow:0 8px 20px rgba(255,61,129,.45);text-align:center}
+
+/* ===== TABS ===== */
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:15;background:rgba(243,244,255,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.tablist{display:flex;gap:8px;overflow-x:auto;padding-block:10px;scrollbar-width:none}
+.tablist button{flex:none;display:flex;align-items:center;gap:8px;border:2px solid var(--line);background:var(--card);color:var(--ink);font:800 15px var(--f-head);padding:8px 16px;border-radius:999px;cursor:pointer}
+.tablist button .ic{font-size:18px}
+.tablist button[aria-selected="true"]{background:var(--night);border-color:var(--night);color:#fff}
+
+/* ===== SECTIONS ===== */
+main{padding-block:30px 60px}
+[role="tabpanel"]{display:grid;gap:46px}
+.h2{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.h2 .ic{flex:none;width:48px;height:48px;border-radius:14px;display:grid;place-items:center;font-size:24px;background:var(--c);box-shadow:0 8px 18px color-mix(in srgb,var(--c) 35%,transparent)}
+h2{font-size:clamp(26px,4vw,34px);font-weight:800}
+.lead{color:var(--mute);font-size:17px;margin:0 0 18px;max-width:64ch}
+
+/* what is */
+.cards3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:760px){.cards3{grid-template-columns:1fr}}
+.feat{background:var(--card);border-radius:20px;padding:20px;border:2px solid var(--line);position:relative;overflow:hidden}
+.feat::before{content:"";position:absolute;inset:0 0 auto;height:6px;background:var(--c)}
+.feat .emo{font-size:38px;line-height:1}
+.feat h3{font-size:21px;margin:10px 0 4px;font-weight:800}
+.feat p{margin:0;color:var(--mute)}
+
+/* stages */
+.stages{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;counter-reset:st}
+@media (max-width:860px){.stages{grid-template-columns:1fr}}
+.stage{border-radius:22px;padding:20px;color:#fff;background:var(--c);position:relative;overflow:hidden;display:flex;flex-direction:column;gap:8px}
+.stage::after{content:attr(data-n);position:absolute;inset-inline-end:10px;top:-18px;font:800 120px/1 var(--f-head);color:rgba(255,255,255,.14)}
+.stage .top{display:flex;align-items:center;gap:10px}
+.stage .emo{width:50px;height:50px;border-radius:14px;background:rgba(255,255,255,.2);display:grid;place-items:center;font-size:26px}
+.stage .chip{background:rgba(255,255,255,.22);border-radius:999px;padding:2px 10px;font-weight:700;font-size:13px}
+.stage h3{font-size:30px;font-weight:800}
+.stage p{margin:0;opacity:.95}
+.job{background:#fff;color:var(--ink);border-radius:14px;padding:12px 14px;margin-top:auto}
+.job b{display:block;font-family:var(--f-head);font-size:16px;color:var(--c2)}
+.job ul{margin:4px 0 0;padding:0;list-style:none}
+.job li{display:flex;gap:8px;font-size:15px;margin:3px 0}
+.job li::before{content:"✅";flex:none}
+
+/* faq */
+.faq{display:grid;gap:10px}
+details{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:4px 16px}
+details[open]{border-color:var(--blue);box-shadow:0 8px 20px rgba(79,91,255,.12)}
+summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:12px;padding:12px 0;font:700 17px var(--f-head)}
+summary::-webkit-details-marker{display:none}
+summary .q{font-size:22px;flex:none}
+summary::after{content:"＋";margin-inline-start:auto;color:var(--blue);font-weight:800}
+details[open] summary::after{content:"－"}
+details p{margin:0 0 14px;color:var(--mute);padding-inline-start:34px}
+
+/* team */
+.teamgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:860px){.teamgrid{grid-template-columns:1fr}}
+.tcard{background:var(--card);border-radius:22px;border:2px solid var(--line);overflow:hidden;display:flex;flex-direction:column}
+.tcard .band{background:linear-gradient(135deg,var(--c),var(--c2));color:#fff;padding:16px 18px;display:flex;align-items:center;gap:12px}
+.tcard .band .emo{font-size:36px}
+.tcard .band small{display:block;font-weight:700;opacity:.9;font-size:13px}
+.tcard .band h3{font-size:22px;font-weight:800}
+.tcard ul{margin:0;padding:16px 18px;list-style:none;display:grid;gap:6px}
+.tcard li{display:flex;gap:8px}
+.tcard li::before{content:"✨";flex:none}
+.tcard .role{margin:auto 18px 16px;background:var(--bg);border-radius:12px;padding:8px 12px;font-weight:700;font-size:14px}
+.dream{margin-top:16px;border-radius:22px;padding:18px 20px;background:linear-gradient(90deg,var(--night),var(--night2));color:#fff;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.dream .emo{font-size:40px}
+.dream p{margin:0;flex:1;min-width:220px}
+.dream b{color:var(--yellow)}
+.alert{margin-top:14px;border-radius:16px;padding:14px 16px;background:#fff1f6;border:2px dashed var(--pink);display:flex;gap:12px;align-items:flex-start}
+.alert .emo{font-size:26px}
+.alert p{margin:0}
+
+/* apply */
+.formcard{background:var(--card);border-radius:24px;border:2px solid var(--line);padding:22px;box-shadow:0 12px 30px rgba(21,25,54,.06)}
+form{display:grid;gap:18px}
+.row{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
+.row>*{min-width:0}
+label,.lbl{display:block;font:700 16px var(--f-head);margin-bottom:6px}
+.hint{font:400 14px var(--f-body);color:var(--mute)}
+input[type=text],select,textarea{width:100%;font:15px var(--f-body);color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:10px 12px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 4px rgba(79,91,255,.15)}
+textarea{min-height:84px;resize:vertical}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips label{display:inline-flex;align-items:center;gap:6px;margin:0;font:700 14px var(--f-body);border:2px solid var(--line);border-radius:999px;padding:7px 14px;cursor:pointer;background:var(--card)}
+.chips input{position:absolute;opacity:0;pointer-events:none}
+.chips label:has(input:checked){background:var(--blue);border-color:var(--blue);color:#fff}
+.chips label:has(input:focus-visible){outline:3px solid var(--yellow)}
+.check{display:flex;gap:10px;align-items:flex-start;font-weight:600}
+.check input{width:20px;height:20px;margin-top:4px;flex:none;accent-color:var(--blue)}
+.err{color:var(--pink);font-weight:700;min-height:1em}
+#msg{min-height:260px;font:14px/1.6 var(--f-body)}
+.status{color:var(--green);font-weight:700;min-height:1.3em}
+.mail{font-family:var(--f-num);font-size:14px;background:var(--bg);padding:3px 8px;border-radius:8px;user-select:all;word-break:break-all;color:var(--ink)}
+.out{margin-top:20px;display:grid;gap:10px;background:#eefcf7;border:2px solid var(--green);border-radius:18px;padding:16px}
+
+/* parents */
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:760px){.two{grid-template-columns:1fr}}
+.pcard{background:var(--card);border-radius:22px;border:2px solid var(--line);padding:20px;display:flex;flex-direction:column;gap:10px}
+.pcard .head{display:flex;gap:12px;align-items:center}
+.pcard .head .emo{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;font-size:28px;background:var(--c)}
+.pcard h3{font-size:22px;font-weight:800}
+.pcard .when{font-weight:700;color:var(--mute);font-size:14px}
+.ticks{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+.ticks li{display:flex;gap:8px}
+.ticks li .n{flex:none;width:24px;height:24px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;font:800 13px var(--f-head)}
+.pcard .btn{align-self:flex-start}
+.small{font-size:14px;color:var(--mute);margin:0}
+
+/* festival */
+.days{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:760px){.days{grid-template-columns:1fr}}
+.day{border-radius:22px;overflow:hidden;background:var(--card);border:2px solid var(--line);display:flex;flex-direction:column}
+.day .dhead{background:linear-gradient(135deg,var(--c),var(--c2));color:#fff;padding:18px 20px}
+.day .dhead small{display:inline-block;background:rgba(255,255,255,.25);border-radius:999px;padding:1px 10px;font-weight:700;font-size:12px}
+.day .dhead h3{font-size:26px;font-weight:800;margin-top:6px}
+.day .dhead .when{font-weight:700;opacity:.95}
+.day .body{padding:16px 20px;display:flex;flex-direction:column;gap:12px;flex:1}
+.day .body .linkrow{margin-top:auto}
+.emolist{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.emolist li{display:flex;gap:10px;align-items:flex-start}
+.emolist li .e{flex:none;font-size:20px;line-height:1.4}
+.agenda{margin:0;padding:0;list-style:none;display:grid;gap:4px}
+.agenda li{display:grid;grid-template-columns:58px minmax(0,1fr);gap:10px;align-items:center;padding:6px 10px;border-radius:10px;background:var(--bg)}
+.agenda li.hi{background:#ecefff;font-weight:700}
+.agenda time{font:700 14px var(--f-num);color:var(--blue)}
+.linkrow{display:flex;flex-wrap:wrap;gap:8px}
+.btn.sm{padding:8px 14px;font-size:14px;border-radius:12px}
+.recap{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.recap{grid-template-columns:1fr}}
+.recap div{background:var(--card);border:2px dashed var(--line);border-radius:18px;padding:14px 16px}
+.recap .e{font-size:28px}
+.recap h3{font-size:18px;font-weight:800;margin:4px 0}
+.recap p{margin:0;color:var(--mute);font-size:15px}
+.ways{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.ways{grid-template-columns:1fr}}
+
+/* ===== FOOTER ===== */
+footer{background:var(--night);color:#cfd3f7;padding-block:34px 40px}
+footer .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+@media (max-width:760px){footer .grid{grid-template-columns:1fr}}
+footer h4{font:800 17px var(--f-head);color:#fff;margin:0 0 8px}
+footer p,footer ul{margin:0;font-size:14px}
+footer ul{list-style:none;padding:0;display:grid;gap:4px}
+footer a{color:var(--yellow)}
+footer .mail{background:rgba(255,255,255,.1);color:#fff}
+footer .made{margin-top:24px;padding-top:16px;border-top:1px solid rgba(255,255,255,.12);font-size:13px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+@media (prefers-reduced-motion:reduce){.btn{transition:none}.btn:hover{transform:none}}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+<style>[hidden]{display:none!important}img{max-width:100%}</style>
+</head>
+<body>
+
+
+<div id="app" data-lang="en" dir="ltr" lang="en">
+
+<!-- ================= HEADER ================= -->
+<header class="hero gut"><div class="col">
+  <div class="topbar">
+    <div class="logo"><div class="bolt">⚡</div><div>STEMforAll Hackathon<small><span class="en">The First Academy · Mr. Saad</span><span class="ar">الأكاديمية الأولى · الأستاذ سعد</span></small></div></div>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" id="b-en" aria-pressed="true">🇬🇧 English</button>
+      <button type="button" id="b-ar" aria-pressed="false" lang="ar">🇦🇪 عربي</button>
+    </div>
+  </div>
+  <div class="herogrid">
+    <div style="min-width:0">
+      <div class="kicker"><span class="dot"></span><span class="en">Registration is open again!</span><span class="ar">التسجيل مفتوح من جديد!</span></div>
+      <h1><span class="en">Code it. Build it. <span class="grad">Win it.</span> 🏆</span><span class="ar">برمجها. ابنِها. <span class="grad">اربح بها.</span> 🏆</span></h1>
+      <p class="sub"><span class="en">One day, one surprise theme, one team from The First Academy. Are you in? 🚀</span><span class="ar">يوم واحد، موضوع مفاجئ واحد، وفريق واحد من الأكاديمية الأولى. هل أنت معنا؟ 🚀</span></p>
+      <ul class="badges">
+        <li>📅 <span class="en">Fri 30 Oct 2026</span><span class="ar">الجمعة 30 أكتوبر 2026</span></li>
+        <li>⏰ <span class="en">9:00 am – 4:30 pm</span><span class="ar">من 9:00 صباحاً حتى 4:30 عصراً</span></li>
+        <li>📍 <span class="en">GEMS Winchester School Dubai</span><span class="ar">جيمس وينشستر دبي</span></li>
+        <li>👥 <span class="en">Teams of 2–4 · Grades 9–12</span><span class="ar">فرق 2–4 · الصفوف 9–12</span></li>
+        <li class="fire">🔥 <span class="en">Only 10 places!</span><span class="ar">10 مقاعد فقط!</span></li>
+      </ul>
+      <div class="cta">
+        <a class="btn y" href="#apply" data-go="apply">🚀 <span class="en">Apply now</span><span class="ar">قدّم الآن</span></a>
+        <a class="btn w" href="#parents" data-go="parents">👨‍👩‍👧 <span class="en">Parents</span><span class="ar">أولياء الأمور</span></a>
+      </div>
+      <div class="countdown" id="cd" aria-live="off">
+        <span class="lbl">⏳ <span class="en">Starts in</span><span class="ar">يبدأ بعد</span></span>
+        <div class="cell"><b id="cd-d">--</b><span class="en">days</span><span class="ar">يوم</span></div>
+        <div class="cell"><b id="cd-h">--</b><span class="en">hours</span><span class="ar">ساعة</span></div>
+        <div class="cell"><b id="cd-m">--</b><span class="en">min</span><span class="ar">دقيقة</span></div>
+        <div class="cell"><b id="cd-s">--</b><span class="en">sec</span><span class="ar">ثانية</span></div>
+      </div>
+    </div>
+    <div class="posterwrap">
+      <div class="sticker"><span class="en">🔥 10 places<br>only!</span><span class="ar">🔥 10 مقاعد<br>فقط!</span></div>
+      <img src="STEMforAll-Hackathon-Poster.png" alt="STEMforAll Hackathon poster">
+    </div>
+  </div>
+</div></header>
+
+<!-- ================= TABS ================= -->
+<nav class="tabs gut" aria-label="Sections"><div class="col">
+  <div class="tablist" role="tablist">
+    <button role="tab" id="t-about" aria-controls="about" aria-selected="true"><span class="ic">💡</span><span class="en">About</span><span class="ar">عن الهاكاثون</span></button>
+    <button role="tab" id="t-festival" aria-controls="festival" aria-selected="false" tabindex="-1"><span class="ic">🎪</span><span class="en">Festival</span><span class="ar">المهرجان</span></button>
+    <button role="tab" id="t-team" aria-controls="team" aria-selected="false" tabindex="-1"><span class="ic">🤝</span><span class="en">The team</span><span class="ar">الفريق</span></button>
+    <button role="tab" id="t-apply" aria-controls="apply" aria-selected="false" tabindex="-1"><span class="ic">🚀</span><span class="en">Apply</span><span class="ar">قدّم طلبك</span></button>
+    <button role="tab" id="t-parents" aria-controls="parents" aria-selected="false" tabindex="-1"><span class="ic">👨‍👩‍👧</span><span class="en">Parents &amp; teachers</span><span class="ar">أولياء الأمور والمعلمون</span></button>
+  </div>
+</div></nav>
+
+<main class="gut"><div class="col">
+
+<!-- ================= ABOUT ================= -->
+<section role="tabpanel" id="about" aria-labelledby="t-about">
+
+  <div>
+    <div class="h2" style="--c:#ffe9a8"><span class="ic">🤔</span><h2><span class="en">What is a hackathon?</span><span class="ar">ما هو الهاكاثون؟</span></h2></div>
+    <p class="lead"><span class="en">A one-day challenge: small teams get a problem, build a solution with code, and show it to judges.</span><span class="ar">تحدٍّ ليوم واحد: فرق صغيرة تحصل على مشكلة، فتبني حلاً بالبرمجة، وتعرضه على الحكّام.</span></p>
+    <div class="cards3">
+      <div class="feat" style="--c:var(--yellow)"><div class="emo">🎁</div><h3><span class="en">Surprise theme</span><span class="ar">موضوع مفاجئ</span></h3><p><span class="en">Revealed on the day. Nobody knows it before, so every team starts equal.</span><span class="ar">يُعلن في يوم المسابقة. لا أحد يعرفه مسبقاً، فالجميع يبدأ من نفس النقطة.</span></p></div>
+      <div class="feat" style="--c:var(--blue)"><div class="emo">👥</div><h3><span class="en">Teams of 2–4</span><span class="ar">فرق من 2 إلى 4</span></h3><p><span class="en">Grades 9–12 with some coding experience. Grades can mix!</span><span class="ar">الصفوف 9–12 مع خبرة في البرمجة. ويمكن خلط الصفوف!</span></p></div>
+      <div class="feat" style="--c:var(--pink)"><div class="emo">🏆</div><h3><span class="en">Real judges</span><span class="ar">حكّام حقيقيون</span></h3><p><span class="en">People who work in tech watch your demo and give feedback.</span><span class="ar">أشخاص يعملون في التقنية يشاهدون عرضك ويقدمون ملاحظاتهم.</span></p></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="h2" style="--c:#d9dcff"><span class="ic">🗺️</span><h2><span class="en">The 3 stages</span><span class="ar">المراحل الثلاث</span></h2></div>
+    <p class="lead"><span class="en">This is how the day works, step by step.</span><span class="ar">هكذا يسير اليوم، خطوة بخطوة.</span></p>
+    <div class="stages">
+      <article class="stage" data-n="1" style="--c:var(--blue);--c2:var(--blue)">
+        <div class="top"><div class="emo">📢</div><span class="chip"><span class="en">Stage 1 · Morning</span><span class="ar">المرحلة 1 · الصباح</span></span></div>
+        <h3><span class="en">Briefing</span><span class="ar">الإحاطة</span></h3>
+        <p><span class="en">Introduction, rules, team set-up and the challenge briefing. The surprise theme is revealed! 🎁</span><span class="ar">تعريف، والقوانين، وتجهيز الفريق، وشرح التحدي. ويُكشف الموضوع المفاجئ! 🎁</span></p>
+        <div class="job"><b><span class="en">🎯 Your job</span><span class="ar">🎯 مهمتك</span></b><ul>
+          <li><span class="en">Listen carefully</span><span class="ar">استمع بتركيز</span></li>
+          <li><span class="en">Write the problem in one sentence</span><span class="ar">اكتب المشكلة في جملة واحدة</span></li>
+          <li><span class="en">Agree who does what</span><span class="ar">اتفقوا على توزيع الأدوار</span></li></ul></div>
+      </article>
+      <article class="stage" data-n="2" style="--c:var(--pink);--c2:var(--pink)">
+        <div class="top"><div class="emo">💻</div><span class="chip"><span class="en">Stage 2 · 2 hours</span><span class="ar">المرحلة 2 · ساعتان</span></span></div>
+        <h3><span class="en">Coding</span><span class="ar">البرمجة</span></h3>
+        <p><span class="en">Two hours of team problem-solving and coding to build your project. ⚡</span><span class="ar">ساعتان من حل المشكلات والبرمجة الجماعية لبناء مشروعكم. ⚡</span></p>
+        <div class="job"><b><span class="en">🎯 Your job</span><span class="ar">🎯 مهمتك</span></b><ul>
+          <li><span class="en">Make a small version work first</span><span class="ar">اجعلوا نسخة صغيرة تعمل أولاً</span></li>
+          <li><span class="en">Test often, save often</span><span class="ar">اختبروا واحفظوا باستمرار</span></li>
+          <li><span class="en">Last 15 min: prepare the pitch</span><span class="ar">آخر 15 دقيقة: جهّزوا العرض</span></li></ul></div>
+      </article>
+      <article class="stage" data-n="3" style="--c:var(--green);--c2:var(--green)">
+        <div class="top"><div class="emo">🏆</div><span class="chip"><span class="en">Stage 3 · Afternoon</span><span class="ar">المرحلة 3 · بعد الظهر</span></span></div>
+        <h3><span class="en">Judging</span><span class="ar">التحكيم</span></h3>
+        <p><span class="en">Teams present their solutions to industry judges and receive feedback. 🎤</span><span class="ar">تعرض الفرق حلولها على حكّام من قطاع الصناعة وتتلقى ملاحظاتهم. 🎤</span></p>
+        <div class="job"><b><span class="en">🎯 Your job</span><span class="ar">🎯 مهمتك</span></b><ul>
+          <li><span class="en">Explain the problem</span><span class="ar">اشرحوا المشكلة</span></li>
+          <li><span class="en">Show it working live</span><span class="ar">اعرضوا الحل وهو يعمل</span></li>
+          <li><span class="en">Everyone speaks</span><span class="ar">ليتحدث الجميع</span></li></ul></div>
+      </article>
+    </div>
+  </div>
+
+  <div>
+    <div class="h2" style="--c:#ffd6e5"><span class="ic">❓</span><h2><span class="en">Questions</span><span class="ar">أسئلة شائعة</span></h2></div>
+    <div class="faq">
+      <details><summary><span class="q">🙋</span><span class="en">Who can join?</span><span class="ar">من يمكنه المشاركة؟</span></summary><p><span class="en">Grade 10, 11 and 12 students with some coding experience. The organisers accept Grades 9–12, in teams of 2–4.</span><span class="ar">طلاب الصفوف 10 و11 و12 ممن لديهم خبرة في البرمجة. يقبل المنظمون الصفوف 9–12، في فرق من 2 إلى 4.</span></p></details>
+      <details><summary><span class="q">🧠</span><span class="en">Do I need to be an expert coder?</span><span class="ar">هل يجب أن أكون مبرمجاً محترفاً؟</span></summary><p><span class="en">No, but you need some coding experience. A strong team mixes coding, making, design and presenting.</span><span class="ar">لا، لكن تحتاج خبرة برمجية ولو بسيطة. والفريق القوي يجمع البرمجة والتصنيع والتصميم والعرض.</span></p></details>
+      <details><summary><span class="q">🧍</span><span class="en">Can I apply alone?</span><span class="ar">هل يمكنني التقديم فردياً؟</span></summary><p><span class="en">Yes! Apply alone and Mr. Saad builds the team, or apply with your own group.</span><span class="ar">نعم! قدّم فردياً وسيكوّن الأستاذ سعد الفريق، أو قدّم مع مجموعتك.</span></p></details>
+      <details><summary><span class="q">⭐</span><span class="en">How will Mr. Saad choose the team?</span><span class="ar">كيف سيختار الأستاذ سعد الفريق؟</span></summary><p><span class="en">From your application: your talents, what you have built, your own idea and why you want to go. Only 10 places for new teams, so we send our strongest team.</span><span class="ar">من طلبك: مواهبك، وما بنيته، وفكرتك الخاصة، وسبب رغبتك في المشاركة. توجد 10 مقاعد فقط للفرق الجديدة، لذلك سنرسل أقوى فريق.</span></p></details>
+      <details><summary><span class="q">🤖</span><span class="en">Can we use AI tools?</span><span class="ar">هل يمكن استخدام الذكاء الاصطناعي؟</span></summary><p><span class="en">The organisers explain the rules in the briefing. Be ready to work with and without AI.</span><span class="ar">يشرح المنظمون القوانين في جلسة الإحاطة. كن مستعداً للعمل باستخدام الذكاء الاصطناعي ودونه.</span></p></details>
+      <details><summary><span class="q">💰</span><span class="en">Does it cost anything?</span><span class="ar">هل توجد رسوم؟</span></summary><p><span class="en">The organisers list STEMforAll 2026 as free to attend.</span><span class="ar">يذكر المنظمون أن حضور STEMforAll 2026 مجاني.</span></p></details>
+      <details><summary><span class="q">🎒</span><span class="en">What do I bring?</span><span class="ar">ماذا أحضر معي؟</span></summary><p><span class="en">💻 A charged laptop and charger (if you have one) · 💧 water · 🍎 a snack · 🪪 school ID. Mr. Saad confirms the full list with the team.</span><span class="ar">💻 حاسوب محمول مشحون مع الشاحن (إن وُجد) · 💧 ماء · 🍎 وجبة خفيفة · 🪪 بطاقة المدرسة. ويؤكد الأستاذ سعد القائمة الكاملة مع الفريق.</span></p></details>
+      <details><summary><span class="q">⏰</span><span class="en">When is the deadline?</span><span class="ar">ما آخر موعد للتقديم؟</span></summary><p><span class="en">As soon as possible, and Monday 19 October at the latest. Places go fast! 🔥</span><span class="ar">بأسرع ما يمكن، وآخر موعد الإثنين 19 أكتوبر. المقاعد تنفد بسرعة! 🔥</span></p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FESTIVAL ================= -->
+<section role="tabpanel" id="festival" aria-labelledby="t-festival" hidden>
+
+  <div>
+    <div class="h2" style="--c:#ffe1ec"><span class="ic">🎪</span><h2><span class="en">STEMforAll 2026: the whole festival</span><span class="ar">STEMforAll 2026: المهرجان كاملاً</span></h2></div>
+    <p class="lead"><span class="en">"Inspiring the next generation of innovators." The hackathon is one part of a two-day STEM festival, organised by <b>EdV</b> and <b>GEMS Winchester School Dubai</b>.</span><span class="ar">«إلهام الجيل القادم من المبتكرين». الهاكاثون جزء من مهرجان علمي لمدة يومين تنظمه <b>EdV</b> و<b>مدرسة جيمس وينشستر دبي</b>.</span></p>
+        <div class="cards3">
+      <div class="feat" style="--c:var(--blue)"><div class="emo">📅</div><h3><span class="en">30–31 October 2026</span><span class="ar">30–31 أكتوبر 2026</span></h3><p><span class="en">Friday for families and students, Saturday for teachers.</span><span class="ar">الجمعة للعائلات والطلاب، والسبت للمعلمين.</span></p></div>
+      <div class="feat" style="--c:var(--green)"><div class="emo">📍</div><h3><span class="en">GEMS Winchester School Dubai</span><span class="ar">مدرسة جيمس وينشستر دبي</span></h3><p><span class="en">Dubailand.</span><span class="ar">دبي لاند.</span></p></div>
+      <div class="feat" style="--c:var(--pink)"><div class="emo">🎟️</div><h3><span class="en">Free to attend</span><span class="ar">الحضور مجاني</span></h3><p><span class="en">Free family tickets and free teacher registration.</span><span class="ar">تذاكر مجانية للعائلات وتسجيل مجاني للمعلمين.</span></p></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="h2" style="--c:#d9dcff"><span class="ic">🧩</span><h2><span class="en">Three ways to take part</span><span class="ar">ثلاث طرق للمشاركة</span></h2></div>
+    <div class="ways">
+      <div class="feat" style="--c:var(--purple)"><div class="emo">🧑‍🏫</div><h3><span class="en">STEM teachers &amp; leaders</span><span class="ar">معلمو وقادة العلوم والتقنية</span></h3><p><span class="en">A free day of professional learning, workshops and networking with practitioners across the region.</span><span class="ar">يوم مجاني من التعلم المهني وورش العمل والتواصل مع خبراء من المنطقة.</span></p></div>
+      <div class="feat" style="--c:var(--orange)"><div class="emo">👨‍👩‍👧</div><h3><span class="en">Families</span><span class="ar">العائلات</span></h3><p><span class="en">A free, hands-on Family Friday of showcases, careers guidance and activities to spark curiosity.</span><span class="ar">يوم جمعة عائلي مجاني وتفاعلي فيه معارض وإرشاد مهني وأنشطة تثير الفضول.</span></p></div>
+      <div class="feat" style="--c:var(--green)"><div class="emo">🏢</div><h3><span class="en">Industry &amp; university partners</span><span class="ar">شركاء الصناعة والجامعات</span></h3><p><span class="en">Meet families, teachers and the UAE's brightest young talent, and showcase work in STEM.</span><span class="ar">يلتقون العائلات والمعلمين وألمع المواهب الشابة في الإمارات، ويعرضون أعمالهم في العلوم والتقنية.</span></p></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="h2" style="--c:#fff0b8"><span class="ic">🗓️</span><h2><span class="en">The two days</span><span class="ar">اليومان</span></h2></div>
+    <div class="days">
+      <article class="day" style="--c:#ff3d81;--c2:#ff7a29">
+        <div class="dhead"><small><span class="en">NEW FOR 2026 · DAY 1</span><span class="ar">جديد 2026 · اليوم الأول</span></small><h3><span class="en">Family Friday</span><span class="ar">جمعة العائلة</span></h3><div class="when">📅 <span class="en">Fri 30 Oct · 1–5 pm</span><span class="ar">الجمعة 30 أكتوبر · من 1 إلى 5 مساءً</span></div></div>
+        <div class="body">
+          <p style="margin:0"><span class="en">Student project showcases, hands-on family activities, and talks with universities and employers about STEM careers.</span><span class="ar">عروض لمشاريع الطلاب، وأنشطة عائلية تفاعلية، وحوارات مع الجامعات وجهات العمل حول مهن العلوم والتقنية.</span></p>
+          <ul class="emolist">
+            <li><span class="e">🎓</span><span><span class="en">STEM University and Careers Fair with careers guidance</span><span class="ar">معرض الجامعات والمهن العلمية مع إرشاد مهني</span></span></li>
+            <li><span class="e">💻</span><span><span class="en"><b>Inter-school Hackathon finals</b></span><span class="ar"><b>نهائيات الهاكاثون بين المدارس</b></span></span></li>
+            <li><span class="e">💡</span><span><span class="en">Innovation Fair showcasing students from a range of schools</span><span class="ar">معرض ابتكارات لطلاب من مدارس مختلفة</span></span></li>
+            <li><span class="e">🎤</span><span><span class="en">TechX Talks from students, teachers and families</span><span class="ar">محاضرات TechX يقدمها طلاب ومعلمون وعائلات</span></span></li>
+            <li><span class="e">📚</span><span><span class="en">Reading areas with AI and STEM storytellers</span><span class="ar">أركان قراءة مع رواة قصص عن الذكاء الاصطناعي والعلوم</span></span></li>
+          </ul>
+          <p class="small">💻 <span class="en">Hackathon teams: the competition day runs 9:00 am – 4:30 pm (registration form).</span><span class="ar">فرق الهاكاثون: يوم المسابقة من 9:00 صباحاً حتى 4:30 عصراً (حسب نموذج التسجيل).</span></p>
+          <div class="linkrow"><a class="btn b sm" href="https://ed-v.notion.site/2fbe04df9141809bb05fd6bbeb019960" target="_blank" rel="noopener">🎟️ <span class="en">Claim a free family ticket</span><span class="ar">احجز تذكرة عائلية مجانية</span> ↗</a></div>
+        </div>
+      </article>
+      <article class="day" style="--c:#4f5bff;--c2:#8b5cf6">
+        <div class="dhead"><small><span class="en">DAY 2</span><span class="ar">اليوم الثاني</span></small><h3><span class="en">Schools Saturday</span><span class="ar">سبت المدارس</span></h3><div class="when">📅 <span class="en">Sat 31 Oct · 8 am – 2 pm</span><span class="ar">السبت 31 أكتوبر · من 8 صباحاً إلى 2 ظهراً</span></div></div>
+        <div class="body">
+          <p style="margin:0"><span class="en">Professional learning for teachers and leaders of STEM, AI and enrichment: new teaching strategies, industry innovators and expert workshops.</span><span class="ar">تطوير مهني لمعلمي وقادة العلوم والذكاء الاصطناعي والإثراء: استراتيجيات تدريس جديدة، ومبتكرون من الصناعة، وورش عمل من خبراء.</span></p>
+          <ol class="agenda">
+            <li><time>8:00</time><span><span class="en">Registration &amp; arrival</span><span class="ar">التسجيل والوصول</span></span></li>
+            <li><time>8:50</time><span><span class="en">Welcome</span><span class="ar">الترحيب</span></span></li>
+            <li class="hi"><time>9:00</time><span><span class="en">Keynote</span><span class="ar">الكلمة الرئيسية</span></span></li>
+            <li><time>9:35</time><span><span class="en">Sponsor spotlight</span><span class="ar">فقرة الرعاة</span></span></li>
+            <li class="hi"><time>10:00</time><span><span class="en">Workshop 1</span><span class="ar">ورشة 1</span></span></li>
+            <li><time>10:45</time><span><span class="en">Break &amp; networking</span><span class="ar">استراحة وتواصل</span></span></li>
+            <li class="hi"><time>11:15</time><span><span class="en">Workshop 2</span><span class="ar">ورشة 2</span></span></li>
+            <li><time>12:00</time><span><span class="en">Lunch, networking &amp; exhibition</span><span class="ar">غداء وتواصل ومعرض</span></span></li>
+            <li class="hi"><time>13:00</time><span><span class="en">Workshop 3</span><span class="ar">ورشة 3</span></span></li>
+            <li><time>13:45</time><span><span class="en">Closing remarks &amp; prizegiving</span><span class="ar">الختام وتوزيع الجوائز</span></span></li>
+            <li><time>14:00</time><span><span class="en">Close</span><span class="ar">النهاية</span></span></li>
+          </ol>
+          <p class="small">🧠 <span class="en">Workshops include AI across the curriculum, primary STEM oracy, a water rocket lab, cross-curricular STREAM projects and more. Most run in more than one slot. After registering, pick a 1st, 2nd and 3rd choice for each slot. Bring Emirates ID or passport; breakfast and lunch are free.</span><span class="ar">تشمل الورش: الذكاء الاصطناعي عبر المناهج، والتعبير الشفهي في العلوم للمرحلة الابتدائية، ومختبر الصواريخ المائية، ومشاريع STREAM متعددة المواد، وغيرها. وتتكرر معظم الورش في أكثر من فترة. بعد التسجيل اختر رغبتك الأولى والثانية والثالثة لكل فترة. أحضر الهوية الإماراتية أو الجواز، والإفطار والغداء مجانيان.</span></p>
+          <div class="linkrow">
+            <a class="btn b sm" href="https://ed-v.notion.site/2fbe04df9141800eb471c2da8099c5a7" target="_blank" rel="noopener">🧑‍🏫 <span class="en">Register</span><span class="ar">سجّل</span> ↗</a>
+            <a class="btn o sm" href="https://ed-v.io/events/stem-for-all-2026/workshops" target="_blank" rel="noopener">📋 <span class="en">See the workshops</span><span class="ar">الورش</span> ↗</a>
+            <a class="btn o sm" href="https://ed-v.notion.site/1315014dd478470d88085a29fe520e55" target="_blank" rel="noopener">✅ <span class="en">Choose workshops</span><span class="ar">اختر ورشك</span> ↗</a>
+            <a class="btn o sm" href="https://ed-v.notion.site/2f7e04df914180f081a7fb62632cc192" target="_blank" rel="noopener">💬 <span class="en">Propose a workshop</span><span class="ar">اقترح ورشة</span> ↗</a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <div>
+    <div class="h2" style="--c:#c9f2e3"><span class="ic">⏪</span><h2><span class="en">A look back at STEMforAll 2025</span><span class="ar">نظرة على STEMforAll 2025</span></h2></div>
+    <p class="lead"><span class="en">The first STEMforAll brought teachers, students, families and industry together at GEMS Winchester School Dubai. Three things defined it:</span><span class="ar">جمعت النسخة الأولى من STEMforAll المعلمين والطلاب والعائلات والصناعة في مدرسة جيمس وينشستر دبي. وتميّزت بثلاثة أمور:</span></p>
+    <div class="recap">
+      <div><span class="e">🤝</span><h3><span class="en">Teacher networking</span><span class="ar">تواصل المعلمين</span></h3><p><span class="en">Workshops and shared practice across the region.</span><span class="ar">ورش عمل وتبادل خبرات من أنحاء المنطقة.</span></p></div>
+      <div><span class="e">🏭</span><h3><span class="en">Industry partnerships</span><span class="ar">شراكات الصناعة</span></h3><p><span class="en">Companies and universities met the next generation of STEM talent.</span><span class="ar">التقت الشركات والجامعات بالجيل القادم من مواهب العلوم والتقنية.</span></p></div>
+      <div><span class="e">🚗</span><h3><span class="en">Student showcases</span><span class="ar">معارض الطلاب</span></h3><p><span class="en">Students presented their projects, like a hand-built electric car.</span><span class="ar">عرض الطلاب مشاريعهم، مثل سيارة كهربائية مصنوعة يدوياً.</span></p></div>
+    </div>
+  </div>
+
+  <div class="dream"><span class="emo">🤝</span><p><span class="en"><b>Partners:</b> Widgit, Edmentum and GEMS Education appear on the poster. Companies and universities can join during the <b>Year of the Family</b>. Sponsorship: <span class="mail" dir="ltr">jamie@ed-v.io</span> · partnering: <span class="mail" dir="ltr">events@ed-v.io</span></span><span class="ar"><b>الشركاء:</b> تظهر Widgit وEdmentum وجيمس للتعليم على الملصق. ويمكن للشركات والجامعات المشاركة خلال <b>عام الأسرة</b>. للرعاية: <span class="mail" dir="ltr">jamie@ed-v.io</span> · للشراكة: <span class="mail" dir="ltr">events@ed-v.io</span></span></p><a class="btn y" href="https://ed-v.io/events/stem-for-all-2026/" target="_blank" rel="noopener">🌐 ed-v.io ↗</a></div>
+</section>
+
+<!-- ================= TEAM ================= -->
+<section role="tabpanel" id="team" aria-labelledby="t-team" hidden>
+  <div>
+    <div class="h2" style="--c:#c9f2e3"><span class="ic">🤝</span><h2><span class="en">One team, many grades</span><span class="ar">فريق واحد من صفوف مختلفة</span></h2></div>
+    <p class="lead"><span class="en">Our dream team mixes Grades 10, 11 and 12. Each brings a superpower, and everyone uses AI to work smarter. 🤖</span><span class="ar">فريق أحلامنا يجمع الصفوف 10 و11 و12. كلٌّ يقدّم قوته الخاصة، والجميع يستخدم الذكاء الاصطناعي للعمل بذكاء أكبر. 🤖</span></p>
+    <div class="teamgrid">
+      <article class="tcard" style="--c:#8b5cf6;--c2:#ff3d81">
+        <div class="band"><span class="emo">🎨</span><div><small><span class="en">GRADE 10</span><span class="ar">الصف العاشر</span></small><h3><span class="en">Canva + AI</span><span class="ar">Canva + الذكاء الاصطناعي</span></h3></div></div>
+        <ul><li><span class="en">Project poster and logo</span><span class="ar">ملصق المشروع والشعار</span></li><li><span class="en">App screens and pitch slides</span><span class="ar">واجهات التطبيق وشرائح العرض</span></li><li><span class="en">Canva AI for images and layouts</span><span class="ar">ذكاء Canva للصور والتصاميم</span></li></ul>
+        <div class="role">🎤 <span class="en">Designer · presenter</span><span class="ar">مصمم · مقدّم العرض</span></div>
+      </article>
+      <article class="tcard" style="--c:#ff7a29;--c2:#ffc531">
+        <div class="band"><span class="emo">🔌</span><div><small><span class="en">GRADE 11</span><span class="ar">الصف الحادي عشر</span></small><h3><span class="en">Arduino coding + AI</span><span class="ar">برمجة الأردوينو + الذكاء الاصطناعي</span></h3></div></div>
+        <ul><li><span class="en">Sensors, lights, motors</span><span class="ar">حساسات وأضواء ومحركات</span></li><li><span class="en">A prototype judges can see</span><span class="ar">نموذج أولي أمام الحكّام</span></li><li><span class="en">AI to write and fix code</span><span class="ar">الذكاء الاصطناعي لكتابة الكود وتصحيحه</span></li></ul>
+        <div class="role">🔧 <span class="en">Maker · coder</span><span class="ar">صانع · مبرمج</span></div>
+      </article>
+      <article class="tcard" style="--c:#4f5bff;--c2:#14b88a">
+        <div class="band"><span class="emo">🐍</span><div><small><span class="en">GRADE 12</span><span class="ar">الصف الثاني عشر</span></small><h3><span class="en">Python, JS + AI</span><span class="ar">بايثون وجافاسكربت + الذكاء الاصطناعي</span></h3></div></div>
+        <ul><li><span class="en">The main program, app or website</span><span class="ar">البرنامج الرئيسي أو التطبيق أو الموقع</span></li><li><span class="en">Data and smart features</span><span class="ar">البيانات والمزايا الذكية</span></li><li><span class="en">AI to code faster</span><span class="ar">الذكاء الاصطناعي لبرمجة أسرع</span></li></ul>
+        <div class="role">👑 <span class="en">Lead coder · captain</span><span class="ar">المبرمج الرئيسي · القائد</span></div>
+      </article>
+    </div>
+    <div class="dream"><span class="emo">🏆</span><p><span class="en"><b>= Dream team!</b> It looks great 🎨, works in the real world 🔌 and runs on solid code 🐍. A 4th member makes your strongest part even stronger.</span><span class="ar"><b>= فريق الأحلام!</b> تصميم جميل 🎨، ويعمل في الواقع 🔌، ويقوم على برمجة قوية 🐍. وعضو رابع يقوّي أهم جزء في مشروعكم.</span></p><a class="btn y" href="#apply" data-go="apply">🚀 <span class="en">Apply</span><span class="ar">قدّم</span></a></div>
+    <div class="alert"><span class="emo">🔥</span><p><span class="en"><b>Only 10 places for new teams.</b> Mr. Saad registers our team as soon as he finds the right 2–4 students. Don't wait!</span><span class="ar"><b>10 مقاعد فقط للفرق الجديدة.</b> يسجّل الأستاذ سعد فريقنا فور العثور على 2–4 طلاب مناسبين. لا تتأخر!</span></p></div>
+  </div>
+</section>
+
+<!-- ================= APPLY ================= -->
+<section role="tabpanel" id="apply" aria-labelledby="t-apply" hidden>
+  <div>
+    <div class="h2" style="--c:#fff0b8"><span class="ic">🚀</span><h2><span class="en">Show Mr. Saad what you can do</span><span class="ar">أرِ الأستاذ سعد ما تستطيع فعله</span></h2></div>
+    <p class="lead"><span class="en">Your talents, something you built, and your own idea. The page turns it into a message you copy and send. ✉️</span><span class="ar">مواهبك، وشيء بنيته، وفكرتك الخاصة. ستحوّلها الصفحة إلى رسالة تنسخها وترسلها. ✉️</span></p>
+    <div class="formcard">
+    <form id="f" novalidate>
+      <div class="row">
+        <div><label for="name">🙋 <span class="en">Full name</span><span class="ar">الاسم الكامل</span></label><input type="text" id="name" autocomplete="name"></div>
+        <div><label for="grade">🎓 <span class="en">Grade</span><span class="ar">الصف</span></label><select id="grade"><option value=""></option><option>10</option><option>11</option><option>12</option></select></div>
+        <div><label for="section">🏫 <span class="en">Class</span><span class="ar">الشعبة</span> <span class="hint">(11-B)</span></label><input type="text" id="section"></div>
+      </div>
+      <div>
+        <span class="lbl">⚡ <span class="en">My talents</span><span class="ar">مواهبي</span> <span class="hint"><span class="en">(tap all that fit)</span><span class="ar">(اختر كل ما ينطبق)</span></span></span>
+        <div class="chips" id="talents">
+          <label><input type="checkbox" value="Python" data-ar="بايثون">🐍 Python</label>
+          <label><input type="checkbox" value="JavaScript / web" data-ar="جافاسكربت / ويب">🌐 JavaScript</label>
+          <label><input type="checkbox" value="Arduino" data-ar="أردوينو">🔌 Arduino</label>
+          <label><input type="checkbox" value="AI tools" data-ar="أدوات الذكاء الاصطناعي">🤖 <span class="en">AI tools</span><span class="ar">ذكاء اصطناعي</span></label>
+          <label><input type="checkbox" value="Canva / design" data-ar="Canva / تصميم">🎨 <span class="en">Canva / design</span><span class="ar">Canva / تصميم</span></label>
+          <label><input type="checkbox" value="Presenting" data-ar="العرض والتقديم">🎤 <span class="en">Presenting</span><span class="ar">التقديم</span></label>
+          <label><input type="checkbox" value="Video" data-ar="الفيديو">🎬 <span class="en">Video</span><span class="ar">فيديو</span></label>
+          <label><input type="checkbox" value="Robotics" data-ar="الروبوتات">🦾 <span class="en">Robotics</span><span class="ar">روبوتات</span></label>
+        </div>
+        <input type="text" id="other" style="margin-top:10px" placeholder="➕ Other talent / موهبة أخرى">
+      </div>
+      <div><label for="built">🛠️ <span class="en">Something I have built or made</span><span class="ar">شيء بنيته أو صنعته</span> <span class="hint"><span class="en">(app, game, robot, design… add a link!)</span><span class="ar">(تطبيق، لعبة، روبوت، تصميم… أضف رابطاً!)</span></span></label><textarea id="built"></textarea></div>
+      <div><label for="idea">💡 <span class="en">My own idea</span><span class="ar">فكرتي الخاصة</span> <span class="hint"><span class="en">(a problem I'd love to solve with tech)</span><span class="ar">(مشكلة أحب أن أحلّها بالتقنية)</span></span></label><textarea id="idea"></textarea></div>
+      <div><label for="why">⭐ <span class="en">Why should I be on the team?</span><span class="ar">لماذا يجب أن أكون في الفريق؟</span></label><textarea id="why" style="min-height:64px"></textarea></div>
+      <div>
+        <span class="lbl">👥 <span class="en">I am applying…</span><span class="ar">أقدّم…</span></span>
+        <div class="chips">
+          <label><input type="radio" name="mode" id="m-solo" value="solo" checked>🧍 <span class="en">Alone</span><span class="ar">فردياً</span></label>
+          <label><input type="radio" name="mode" id="m-team" value="team">👥 <span class="en">With my group</span><span class="ar">مع مجموعتي</span></label>
+        </div>
+      </div>
+      <div id="teamBox" class="row" hidden>
+        <div><label for="members">📝 <span class="en">Team members (name – class)</span><span class="ar">أعضاء الفريق (الاسم – الشعبة)</span></label><textarea id="members" style="min-height:64px"></textarea></div>
+        <div><label for="team">🏷️ <span class="en">Team name</span><span class="ar">اسم الفريق</span></label><input type="text" id="team"></div>
+      </div>
+      <label class="check"><input type="checkbox" id="parent"><span>👨‍👩‍👧 <span class="en">My parent knows I am applying.</span><span class="ar">ولي أمري يعلم أنني أقدّم.</span></span></label>
+      <div class="err" id="err" role="alert"></div>
+      <div><button type="submit" class="btn b">✨ <span class="en">Create my message</span><span class="ar">أنشئ رسالتي</span></button></div>
+    </form>
+    <div id="out" class="out" hidden>
+      <label for="msg">✉️ <span class="en">Your message is ready!</span><span class="ar">رسالتك جاهزة!</span></label>
+      <textarea id="msg" readonly></textarea>
+      <div class="cta">
+        <button type="button" class="btn b" id="copy">📋 <span class="en">Copy message</span><span class="ar">انسخ الرسالة</span></button>
+        <a class="btn o" id="mailto" href="#">📧 <span class="en">Open in email</span><span class="ar">افتح في البريد</span></a>
+      </div>
+      <div class="status" id="status" aria-live="polite"></div>
+      <p class="small">👉 <span class="en">Paste it as a <b>private comment</b> on Mr. Saad's Google Classroom post, or email it to </span><span class="ar">الصقها <b>كتعليق خاص</b> على منشور الأستاذ سعد في Google Classroom، أو أرسلها بالبريد إلى </span><span class="mail" dir="ltr">saad.abusaif@firstacademy.org</span></p>
+    </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PARENTS & TEACHERS ================= -->
+<section role="tabpanel" id="parents" aria-labelledby="t-parents" hidden>
+  <div>
+    <div class="h2" style="--c:#d6f5ff"><span class="ic">👨‍👩‍👧</span><h2><span class="en">Parents and teachers</span><span class="ar">أولياء الأمور والمعلمون</span></h2></div>
+    <p class="lead"><span class="en">Free registration links for families and teachers. 🎟️</span><span class="ar">روابط تسجيل مجانية للعائلات والمعلمين. 🎟️</span></p>
+    <div class="two">
+      <article class="pcard" style="--c:#ffe1ec">
+        <div class="head"><div class="emo">👨‍👩‍👧</div><div><h3><span class="en">Family Day</span><span class="ar">اليوم العائلي</span></h3><div class="when">📅 <span class="en">Fri 30 Oct · 1–5 pm · free</span><span class="ar">الجمعة 30 أكتوبر · 1–5 مساءً · مجاني</span></div></div></div>
+        <p class="small">🎓 <span class="en">Careers fair · 🏛️ universities · 🔬 live demos · 💻 hackathon finals</span><span class="ar">معرض المهن · 🏛️ الجامعات · 🔬 عروض حية · 💻 نهائيات الهاكاثون</span></p>
+        <ol class="ticks" style="--c:var(--pink)">
+          <li><span class="n">1</span><span class="en">Open the form below.</span><span class="ar">افتح النموذج أدناه.</span></li>
+          <li><span class="n">2</span><span class="en">Enter your name, email, family size and school: <b>The First Academy</b>.</span><span class="ar">أدخل اسمك وبريدك وعدد أفراد العائلة والمدرسة: <b>The First Academy</b>.</span></li>
+          <li><span class="n">3</span><span class="en">Tick the contact consent and press Submit. ✅</span><span class="ar">ضع علامة على الموافقة واضغط Submit. ✅</span></li>
+        </ol>
+        <p class="small">📝 <span class="en">If your child is selected, the school sends a separate permission letter for the team (9:00 am – 4:30 pm).</span><span class="ar">إذا اختير ابنك، سترسل المدرسة خطاب موافقة منفصلاً للفريق (9:00 صباحاً – 4:30 عصراً).</span></p>
+        <a class="btn b" href="https://ed-v.notion.site/2fbe04df9141809bb05fd6bbeb019960" target="_blank" rel="noopener">🎟️ <span class="en">Family Day form</span><span class="ar">نموذج اليوم العائلي</span> ↗</a>
+      </article>
+      <article class="pcard" style="--c:#dfe2ff">
+        <div class="head"><div class="emo">🧑‍🏫</div><div><h3><span class="en">Teachers</span><span class="ar">المعلمون</span></h3><div class="when">⚡ <span class="en">Team registration · 10 places</span><span class="ar">تسجيل الفرق · 10 مقاعد</span></div></div></div>
+        <p class="small">📋 <span class="en">School, team name, teacher name and email, 2–4 members with grades.</span><span class="ar">المدرسة، اسم الفريق، اسم المعلم وبريده، 2–4 أعضاء مع صفوفهم.</span></p>
+        <a class="btn b" href="https://forms.cloud.microsoft/pages/responsepage.aspx?id=3Kez0n7Vf0GQrRSbhy6aoRJpu3JdO0JHn2x1i2Orec9UMVo3VzZBVDdJTUtGMkhVRUY3Tk5LOTFLTC4u&amp;route=shorturl" target="_blank" rel="noopener">🚀 <span class="en">Team registration form</span><span class="ar">نموذج تسجيل الفرق</span> ↗</a>
+        <p class="small" style="margin-top:6px">🍳 <span class="en"><b>Schools Saturday, 31 Oct, 8 am – 2 pm:</b> free CPD workshops, breakfast and lunch. Bring Emirates ID or passport 🪪 and use your school email.</span><span class="ar"><b>يوم المدارس، السبت 31 أكتوبر، 8 صباحاً – 2 ظهراً:</b> ورش تطوير مهني مجانية مع الإفطار والغداء. أحضر الهوية الإماراتية أو الجواز 🪪 واستخدم بريد المدرسة.</span></p>
+        <div class="linkrow"><a class="btn o sm" href="https://ed-v.notion.site/2fbe04df9141800eb471c2da8099c5a7" target="_blank" rel="noopener">🧑‍🏫 <span class="en">Teacher day form</span><span class="ar">نموذج يوم المعلمين</span> ↗</a><a class="btn o sm" href="https://ed-v.notion.site/1315014dd478470d88085a29fe520e55" target="_blank" rel="noopener">✅ <span class="en">Choose workshops</span><span class="ar">اختر ورشك</span> ↗</a></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+</div></main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="gut"><div class="col">
+  <div class="grid">
+    <div><h4>⚡ STEMforAll Hackathon 2026</h4><p><span class="en">📅 Fri 30 Oct · ⏰ 9:00–4:30<br>📍 GEMS Winchester School Dubai (Dubailand)</span><span class="ar">📅 الجمعة 30 أكتوبر · ⏰ من 9:00 صباحاً حتى 4:30 عصراً<br>📍 مدرسة جيمس وينشستر دبي (دبي لاند)</span></p></div>
+    <div><h4>🔗 <span class="en">Quick links</span><span class="ar">روابط سريعة</span></h4><ul>
+      <li><a href="#about" data-go="about">💡 <span class="en">About</span><span class="ar">عن الهاكاثون</span></a></li>
+      <li><a href="#festival" data-go="festival">🎪 <span class="en">Festival</span><span class="ar">المهرجان</span></a></li>
+      <li><a href="#apply" data-go="apply">🚀 <span class="en">Apply</span><span class="ar">قدّم طلبك</span></a></li>
+      <li><a href="#parents" data-go="parents">👨‍👩‍👧 <span class="en">Parents &amp; teachers</span><span class="ar">أولياء الأمور والمعلمون</span></a></li>
+      <li><a href="https://ed-v.io/events/stem-for-all-2026" target="_blank" rel="noopener">🌐 ed-v.io</a></li></ul></div>
+    <div><h4>📬 <span class="en">Contact</span><span class="ar">تواصل</span></h4><p><span class="en">Mr. Saad Abu Saif · ICT<br>The First Academy</span><span class="ar">الأستاذ سعد أبو سيف · تقنية المعلومات<br>الأكاديمية الأولى</span><br><span class="mail" dir="ltr">saad.abusaif@firstacademy.org</span></p></div>
+  </div>
+  <div class="made"><span><span class="en">Made with 💙 for our students</span><span class="ar">صُنع بـ 💙 لطلابنا</span></span><span><span class="en">Details from the organisers' poster, announcement and registration form.</span><span class="ar">التفاصيل من ملصق المنظمين وإعلانهم ونموذج التسجيل.</span></span></div>
+</div></footer>
+</div>
+
+<script>
+(function(){
+  var TEACHER_EMAIL = "saad.abusaif@firstacademy.org";
+  var app = document.getElementById("app");
+  function store(k,v){ try{ if(v===undefined) return localStorage.getItem(k); localStorage.setItem(k,v);}catch(e){ return null; } }
+
+  var bEn = document.getElementById("b-en"), bAr = document.getElementById("b-ar");
+  function setLang(l){
+    app.dataset.lang = l; app.setAttribute("dir", l==="ar" ? "rtl" : "ltr"); app.setAttribute("lang", l);
+    bEn.setAttribute("aria-pressed", l==="en"); bAr.setAttribute("aria-pressed", l==="ar");
+    store("sfa-lang", l);
+    if (!document.getElementById("out").hidden) build();
+  }
+  bEn.onclick = function(){ setLang("en"); };
+  bAr.onclick = function(){ setLang("ar"); };
+
+  // tabs
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
+  var navTop = function(){ return document.querySelector(".tabs").getBoundingClientRect().top + window.scrollY - 2; };
+  function show(id, focus, scroll){
+    tabs.forEach(function(t){
+      var on = t.getAttribute("aria-controls") === id;
+      t.setAttribute("aria-selected", on); t.tabIndex = on ? 0 : -1;
+      document.getElementById(t.getAttribute("aria-controls")).hidden = !on;
+      if (on && focus) t.focus();
+    });
+    if (scroll) window.scrollTo({top: navTop()});
+  }
+  tabs.forEach(function(t, i){
+    t.onclick = function(){ show(t.getAttribute("aria-controls"), false, true); };
+    t.onkeydown = function(e){
+      var d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+      if (app.dataset.lang === "ar") d = -d;
+      if (d){ show(tabs[(i + d + tabs.length) % tabs.length].getAttribute("aria-controls"), true); e.preventDefault(); }
+    };
+  });
+  document.querySelectorAll("[data-go]").forEach(function(a){ a.onclick = function(e){ e.preventDefault(); show(a.dataset.go, false, true); }; });
+  var h = location.hash.replace("#","");
+  setLang(h === "ar" ? "ar" : (store("sfa-lang") || "en"));
+  show(["about","festival","team","apply","parents"].indexOf(h) > -1 ? h : "about");
+
+  // countdown to Fri 30 Oct 2026 09:00 Dubai time
+  var target = Date.parse("2026-10-30T09:00:00+04:00");
+  function pad(n){ return (n < 10 ? "0" : "") + n; }
+  function tick(){
+    var ms = target - Date.now(), cd = document.getElementById("cd");
+    if (ms <= 0){ cd.innerHTML = '<span class="lbl" style="font-size:18px">🎉 <span class="en">It\'s hackathon day!</span><span class="ar">اليوم يوم الهاكاثون!</span></span>'; return; }
+    var s = Math.floor(ms / 1000);
+    document.getElementById("cd-d").textContent = Math.floor(s / 86400);
+    document.getElementById("cd-h").textContent = pad(Math.floor(s % 86400 / 3600));
+    document.getElementById("cd-m").textContent = pad(Math.floor(s % 3600 / 60));
+    document.getElementById("cd-s").textContent = pad(s % 60);
+    setTimeout(tick, 1000);
+  }
+  tick();
+
+  // form
+  var fields = ["name","grade","section","other","built","idea","why","members","team"];
+  var teamBox = document.getElementById("teamBox");
+  function mode(){ return document.getElementById("m-team").checked ? "team" : "solo"; }
+  function syncMode(){ teamBox.hidden = mode() !== "team"; }
+  document.getElementById("m-solo").onchange = syncMode;
+  document.getElementById("m-team").onchange = syncMode;
+  try {
+    var d = JSON.parse(store("sfa-draft2") || "{}");
+    fields.forEach(function(k){ if (d[k]) document.getElementById(k).value = d[k]; });
+    (d.talents || []).forEach(function(v){ var c = document.querySelector('#talents input[value="'+v+'"]'); if (c) c.checked = true; });
+    if (d.mode === "team") document.getElementById("m-team").checked = true;
+    if (d.parent) document.getElementById("parent").checked = true;
+  } catch(e){}
+  syncMode();
+  function v(id){ return document.getElementById(id).value.trim(); }
+  function talents(ar){
+    var out = [];
+    document.querySelectorAll("#talents input:checked").forEach(function(c){ out.push(ar ? c.dataset.ar : c.value); });
+    if (v("other")) out.push(v("other"));
+    return out;
+  }
+  document.getElementById("f").addEventListener("input", function(){
+    var d = {mode: mode(), parent: document.getElementById("parent").checked, talents: []};
+    document.querySelectorAll("#talents input:checked").forEach(function(c){ d.talents.push(c.value); });
+    fields.forEach(function(k){ d[k] = document.getElementById(k).value; });
+    store("sfa-draft2", JSON.stringify(d));
+  });
+  function build(){
+    var ar = app.dataset.lang === "ar";
+    var L = ar ? {subj:"طلب الانضمام لهاكاثون STEMforAll – ", hi:"مرحباً أستاذ سعد،", intro:"أرغب في الانضمام إلى فريق هاكاثون STEMforAll يوم 30 أكتوبر.",
+        name:"الاسم", cls:"الصف/الشعبة", tal:"مواهبي", built:"شيء بنيته", idea:"فكرتي الخاصة", why:"لماذا أنا", mode:"أقدّم", solo:"فردياً", team:"مع مجموعتي",
+        mem:"أعضاء الفريق", tname:"اسم الفريق", par:"ولي أمري يعلم", yes:"نعم", no:"ليس بعد", bye:"شكراً لك،"}
+      : {subj:"STEMforAll Hackathon application – ", hi:"Dear Mr. Saad,", intro:"I would like to join the STEMforAll Hackathon team on 30 October.",
+        name:"Name", cls:"Grade / class", tal:"My talents", built:"Something I have built", idea:"My own idea", why:"Why me", mode:"Applying", solo:"Alone", team:"With my group",
+        mem:"Team members", tname:"Team name", par:"My parent knows", yes:"Yes", no:"Not yet", bye:"Thank you,"};
+    var t = talents(ar);
+    var lines = [L.hi, "", L.intro, "",
+      "• " + L.name + ": " + v("name"),
+      "• " + L.cls + ": " + v("grade") + (v("section") ? " – " + v("section") : ""),
+      "• " + L.tal + ": " + (t.length ? t.join(ar ? "، " : ", ") : "—"),
+      "• " + L.built + ": " + (v("built") || "—"),
+      "• " + L.idea + ": " + (v("idea") || "—"),
+      "• " + L.why + ": " + (v("why") || "—"),
+      "• " + L.mode + ": " + (mode() === "team" ? L.team : L.solo)];
+    if (mode() === "team") {
+      if (v("members")) lines.push("• " + L.mem + ":\n  " + v("members").split(/\n+/).join("\n  "));
+      if (v("team")) lines.push("• " + L.tname + ": " + v("team"));
+    }
+    lines.push("• " + L.par + ": " + (document.getElementById("parent").checked ? L.yes : L.no), "", L.bye, v("name"));
+    var text = lines.join("\n"), msg = document.getElementById("msg");
+    msg.value = text; msg.setAttribute("dir", ar ? "rtl" : "ltr");
+    document.getElementById("mailto").href = "mailto:" + TEACHER_EMAIL + "?subject=" + encodeURIComponent(L.subj + v("name") + " " + v("grade") + v("section")) + "&body=" + encodeURIComponent(text);
+    document.getElementById("out").hidden = false;
+  }
+  document.getElementById("f").addEventListener("submit", function(e){
+    e.preventDefault();
+    var ar = app.dataset.lang === "ar", miss = [];
+    if (!v("name")) miss.push(ar ? "الاسم" : "your name");
+    if (!v("grade")) miss.push(ar ? "الصف" : "your grade");
+    if (!v("section")) miss.push(ar ? "الشعبة" : "your class");
+    if (!talents(false).length) miss.push(ar ? "مواهبك" : "at least one talent");
+    if (!v("built")) miss.push(ar ? "شيء بنيته" : "something you have built");
+    document.getElementById("err").textContent = miss.length ? ("⚠️ " + (ar ? "أكمل: " : "Please add: ") + miss.join(ar ? "، " : ", ") + ".") : "";
+    if (miss.length) return;
+    build(); document.getElementById("status").textContent = "";
+    document.getElementById("out").scrollIntoView({block:"nearest"});
+  });
+  document.getElementById("copy").onclick = function(){
+    var msg = document.getElementById("msg"), st = document.getElementById("status"), ar = app.dataset.lang === "ar";
+    function fallback(){ msg.focus(); msg.select(); st.textContent = ar ? "📋 النص محدد، انسخه بالضغط على Ctrl+C." : "📋 Text selected. Press Ctrl+C to copy."; }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(msg.value).then(function(){ st.textContent = ar ? "✅ تم النسخ! الصقه كتعليق خاص في Google Classroom." : "✅ Copied! Paste it as a private comment in Google Classroom."; }, fallback);
+    } else fallback();
+  };
+})();
+</script>
+
+</body>
+</html>
